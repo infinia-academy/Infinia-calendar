@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#101828" />
+<link rel="manifest" href="manifest.webmanifest" />
+<title>Infinia Calendar</title>
+<style>
+:root{
+  --bg:#f6f7fb;--card:#fff;--text:#172033;--muted:#667085;--line:#e5e7eb;--accent:#3448c5;
+  --tuang:#ffe4e6;--boom:#fef3c7;--lek:#fed7aa;--mint:#fce7f3;--baipak:#dbeafe;--base:#dcfce7;--unknown:#f2f4f7;
+  --danger:#b42318;--success:#067647;--warning:#b54708;
+}
+*{box-sizing:border-box}html,body{min-height:100%}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+button,input,select{font:inherit}button{cursor:pointer}.hidden,[hidden]{display:none!important}
+header{background:#101828;color:white;padding:18px 16px 14px;position:sticky;top:0;z-index:20;box-shadow:0 2px 10px #0002}
+.header-inner{max-width:1400px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:14px}.header-copy h1{font-size:20px;margin:0 0 4px}.header-copy p{margin:0;color:#cfd4dc;font-size:13px}.header-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.status-chip{display:inline-flex;align-items:center;gap:7px;border:1px solid #ffffff33;background:#ffffff12;color:#fff;border-radius:999px;padding:7px 10px;font-size:11px;font-weight:750}.status-dot{width:8px;height:8px;border-radius:50%;background:#98a2b3}.status-chip.ok .status-dot{background:#32d583}.status-chip.warn .status-dot{background:#fdb022}.status-chip.bad .status-dot{background:#f97066}
+.header-btn{border:1px solid #ffffff40;background:#ffffff12;color:#fff;border-radius:9px;padding:8px 11px;font-size:12px;font-weight:750}.header-btn:hover{background:#ffffff20}
+.wrap{max-width:1400px;margin:auto;padding:16px}.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}.tabs{display:flex;gap:6px;flex-wrap:wrap}.tab,select,.control-btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 12px;font-size:14px;color:var(--text)}.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}select{min-width:180px}.control-btn{font-weight:700}.control-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.control-btn:disabled{opacity:.55;cursor:not-allowed}.spacer{flex:1}.month-nav{display:flex;align-items:center;gap:6px}.month-label{min-width:150px;text-align:center;font-weight:800;font-size:14px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}.stat b{display:block;font-size:20px}.stat span{font-size:12px;color:var(--muted)}
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px}.pill{padding:5px 9px;border-radius:999px;font-size:12px;border:1px solid #0001}.Tuang{background:var(--tuang)}.Boom{background:var(--boom)}.Lek{background:var(--lek)}.Mint{background:var(--mint)}.Baipak{background:var(--baipak)}.Base{background:var(--base)}.Unknown{background:var(--unknown)}
+.calendar{display:grid;grid-template-columns:repeat(7,minmax(145px,1fr));gap:8px}.dow{font-size:12px;text-transform:uppercase;color:var(--muted);font-weight:700;padding:0 6px}.day{background:var(--card);border:1px solid var(--line);border-radius:12px;min-height:175px;padding:8px;overflow:hidden}.day.dim{opacity:.48}.day.today{box-shadow:inset 0 0 0 2px #98a2ff}.dayhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.date{font-weight:750}.count{font-size:11px;color:var(--muted)}.event{border-radius:8px;padding:6px 7px;margin:5px 0;font-size:11px;line-height:1.25;border:1px solid #0000000d;min-width:0}.event strong{font-size:12px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.event small{display:block;color:#475467;margin-top:2px}.event .event-meta{display:flex;justify-content:space-between;gap:7px;align-items:center}.rate-badge{font-size:9px;font-weight:800;background:#ffffffaa;border:1px solid #00000010;padding:2px 5px;border-radius:999px;white-space:nowrap}.empty{font-size:12px;color:#98a2b3;padding-top:8px}
+.level-picker{position:relative;min-width:260px}.level-picker-btn{width:100%;min-width:260px;border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 36px 9px 12px;font-size:14px;text-align:left;color:var(--text);position:relative}.level-picker-btn:after{content:"▾";position:absolute;right:12px;top:8px;color:var(--muted);font-size:16px}.level-menu{position:absolute;z-index:40;top:calc(100% + 6px);left:0;width:min(340px,92vw);max-height:390px;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 14px 34px #10182824;padding:8px}.level-menu-head{display:flex;justify-content:space-between;align-items:center;padding:5px 6px 8px;border-bottom:1px solid var(--line);margin-bottom:5px}.level-menu-head span{font-size:12px;color:var(--muted)}.level-action{border:0;background:transparent;color:var(--accent);font-size:12px;font-weight:700;padding:4px 6px}.level-option{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:8px;font-size:13px}.level-option:hover{background:#f5f7ff}.level-option input{margin:0;width:16px;height:16px}
+.notice{border:1px solid #f2d6a2;background:#fffaeb;color:#7a4f01;border-radius:12px;padding:11px 13px;font-size:12px;line-height:1.45;margin:10px 0}.notice.error{border-color:#fecdca;background:#fef3f2;color:#912018}.notice.ok{border-color:#abefc6;background:#ecfdf3;color:#05603a}
+.connect-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin:24px auto;max-width:720px;text-align:center}.connect-card h2{margin:0 0 7px;font-size:19px}.connect-card p{margin:0 auto 15px;max-width:580px;color:var(--muted);font-size:13px;line-height:1.5}
+
+/* October-style Course Price / quotation modal */
+.quote-overlay{position:fixed;inset:0;background:#10182880;z-index:80;display:grid;place-items:center;padding:10px}.quote-modal{width:min(1500px,100%);max-height:96vh;overflow:auto;background:#fff;border-radius:18px;box-shadow:0 28px 70px #10182855;border:1px solid #ffffff55}.quote-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:18px 26px 14px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;z-index:5}.quote-head h2{font-size:22px;margin:0 0 3px}.quote-head p{font-size:12px;color:var(--muted);margin:0}.quote-close{border:0;background:#f2f4f7;color:#475467;width:36px;height:36px;border-radius:10px;font-size:23px}.quote-body{padding:18px 26px 26px}.quote-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px 16px}.quote-field{display:flex;flex-direction:column;gap:6px}.quote-field.full{grid-column:1/-1}.quote-field label{font-size:12px;font-weight:800;color:#475467}.quote-field input[type=date]{width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;padding:11px 12px;font-size:14px;color:var(--text)}
+.pathway-picks{display:flex;flex-wrap:wrap;gap:8px}.pathway-chip{display:inline-flex;align-items:center;gap:7px;border:1px solid #aeb8ff;background:#f8f8ff;color:#172033;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:800;cursor:pointer;user-select:none}.pathway-chip input{width:16px;height:16px;margin:0;accent-color:#3d54d7}.pathway-chip.off{border-color:#d0d5dd;background:#fff;color:#98a2b3}
+.quote-toolbar-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.mini-action{border:1px solid #98a2b3;background:#fff;color:#344054;border-radius:8px;padding:7px 10px;font-size:11px;font-weight:800}.quote-helper{font-size:11px;color:var(--muted);line-height:1.45}
+.discount-card{border:1px solid #c7d1ff;background:#f5f7ff;border-radius:12px;padding:11px 14px}.discount-card strong{display:block;color:#293a9b;font-size:18px}.discount-card span{font-size:11px;color:#667085}
+.quote-error{display:none;border:1px solid #fecdca;background:#fef3f2;color:#912018;border-radius:10px;padding:9px 11px;font-size:12px;margin-top:12px}.quote-error.show{display:block}
+.quote-preview{margin-top:18px;border-top:1px solid var(--line);padding-top:16px}.quote-preview-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}.quote-preview-head h3{margin:0;font-size:17px}.quote-preview-head p{margin:2px 0 0;color:var(--muted);font-size:11px}.quote-preview-count{background:#f2f4f7;color:#475467;border-radius:999px;padding:6px 9px;font-size:11px;font-weight:800}
+.quote-month{margin:0 0 20px}.quote-month-title{font-size:14px;font-weight:850;color:#344054;margin:7px 0 8px}.mini-weekdays,.mini-calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}.mini-weekdays{margin-bottom:4px}.mini-weekdays span{text-align:center;font-size:9px;font-weight:800;color:#98a2b3;letter-spacing:.03em}.mini-day{min-height:82px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:4px;overflow:hidden}.mini-day.out-range{background:#fafafa}.mini-date{display:flex;align-items:center;justify-content:space-between;font-size:9px;font-weight:800;color:#475467;margin-bottom:3px}.mini-day.out-range .mini-date{color:#b7bec8}.mini-events{display:grid;gap:3px}.mini-slot{display:grid;grid-template-columns:minmax(0,1fr);gap:3px;min-width:0}.mini-slot.multi{grid-template-columns:repeat(var(--slot-count),minmax(0,1fr));gap:3px;padding:2px;border:1px dashed #cbd5e1;border-radius:7px;background:#f8fafc}.mini-lesson{appearance:none;width:100%;text-align:left;border:1px solid #aeb8ff;background:#eef0ff;color:#2437a6;border-radius:6px;padding:3px 5px;font-size:8.5px;font-weight:800;line-height:1.15;cursor:pointer;display:flex;justify-content:space-between;gap:5px;min-width:0}.mini-slot.multi .mini-lesson{flex-direction:column;justify-content:center;gap:1px;padding:3px 4px}.mini-lesson .lesson-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}.mini-lesson .lesson-time{font-weight:650;opacity:.78;white-space:nowrap;font-size:7.5px}.mini-slot.multi .mini-lesson .lesson-name,.mini-slot.multi .mini-lesson .lesson-time{width:100%;overflow:hidden;text-overflow:ellipsis}.mini-slot.multi .mini-lesson .lesson-time{text-align:left}.mini-lesson.q-Tuang{background:var(--tuang);border-color:#fda4af;color:#9f1239}.mini-lesson.q-Boom{background:var(--boom);border-color:#facc15;color:#854d0e}.mini-lesson.q-Lek{background:var(--lek);border-color:#fb923c;color:#9a3412}.mini-lesson.q-Mint{background:var(--mint);border-color:#f9a8d4;color:#9d174d}.mini-lesson.q-Baipak{background:var(--baipak);border-color:#93c5fd;color:#1e40af}.mini-lesson.q-Base{background:var(--base);border-color:#86efac;color:#166534}.mini-lesson.q-Unknown{background:#eef0ff;border-color:#aeb8ff;color:#2437a6}.mini-lesson.off{background:#fff!important;border-color:#d0d5dd!important;color:#98a2b3!important;text-decoration:line-through;opacity:.68}.mini-empty{font-size:9px;color:#c0c6d0}.quote-hint{margin-top:6px;font-size:9.5px;color:var(--muted)}
+.quote-summary{display:grid;grid-template-columns:repeat(3,minmax(140px,1fr));gap:10px;margin-top:15px}.quote-result{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff}.quote-result span{display:block;text-transform:uppercase;letter-spacing:.04em;font-size:9px;font-weight:850;color:#667085}.quote-result b{display:block;font-size:22px;margin-top:3px}.quote-pricing{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.price-case{border:1px solid var(--line);border-radius:13px;padding:14px;background:#fff}.price-case.final{border-color:#9aa8ff;background:#f5f7ff}.price-case h4{margin:0 0 3px;font-size:13px}.price-case .deadline{font-size:10px;color:#667085}.price-case .big-price{font-size:30px;font-weight:900;margin:6px 0;color:#172033}.price-case.final .big-price{color:#293a9b}.price-case .breakdown{font-size:10.5px;color:#667085;line-height:1.45}.promo{display:inline-block;margin-top:8px;border-radius:999px;padding:4px 7px;font-size:9px;font-weight:850;background:#ecfdf3;color:#067647}.price-case.final .promo{background:#e8ebff;color:#293a9b}.quote-statusline{font-size:10.5px;color:#667085;margin-top:10px}.quote-actions{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap}
+.quote-export-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0 2px}.quote-export-btn{border:1px solid #98a2b3;background:#fff;color:#344054;border-radius:9px;padding:8px 12px;font-size:11px;font-weight:850}.quote-export-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.quote-export-status{font-size:10.5px;color:#667085;min-height:16px}
+.message-overlay{position:fixed;inset:0;background:#10182888;z-index:110;display:grid;place-items:center;padding:14px}.message-modal{width:min(620px,100%);background:#fff;border-radius:16px;border:1px solid #ffffff66;box-shadow:0 24px 64px #10182855;overflow:hidden}.message-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:17px 20px 13px;border-bottom:1px solid var(--line)}.message-head h3{margin:0 0 3px;font-size:19px}.message-head p{margin:0;color:var(--muted);font-size:11px}.message-close{border:0;background:#f2f4f7;color:#475467;width:34px;height:34px;border-radius:9px;font-size:22px}.message-body{padding:18px 20px 20px;display:grid;gap:14px}.message-field{display:grid;gap:6px}.message-field label,.message-label{font-size:12px;font-weight:800;color:#475467}.message-field input[type=text],.message-field select{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 11px;background:#fff;color:var(--text);font-size:14px}.message-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line);border-radius:11px;padding:11px 12px;background:#fafbff}.message-toggle-copy strong{display:block;font-size:12px}.message-toggle-copy span{display:block;color:var(--muted);font-size:10.5px;margin-top:2px}.switch{position:relative;width:46px;height:26px;flex:0 0 auto}.switch input{opacity:0;width:0;height:0}.switch-slider{position:absolute;inset:0;border-radius:999px;background:#d0d5dd;transition:.18s}.switch-slider:before{content:"";position:absolute;width:20px;height:20px;left:3px;top:3px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #0003;transition:.18s}.switch input:checked+.switch-slider{background:var(--accent)}.switch input:checked+.switch-slider:before{transform:translateX(20px)}.message-preview{width:100%;min-height:210px;resize:vertical;border:1px solid var(--line);border-radius:10px;padding:11px;font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;color:#344054;background:#fafafa}.message-actions{display:flex;justify-content:flex-end;gap:8px;align-items:center}.message-status{margin-right:auto;font-size:10.5px;color:var(--muted)}
+
+.login-shell{min-height:100vh;display:grid;place-items:center;padding:22px;background:linear-gradient(180deg,#101828 0 38%,#f6f7fb 38%)}.login-card{width:min(430px,100%);background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:26px;box-shadow:0 20px 60px #10182835}.login-brand{display:flex;align-items:center;gap:10px;margin-bottom:20px}.login-mark{width:42px;height:42px;border-radius:12px;background:#3448c5;color:#fff;display:grid;place-items:center;font-weight:900}.login-card h1{font-size:21px;margin:0}.login-card p{font-size:12px;color:var(--muted);margin:3px 0 0}.login-field{display:flex;flex-direction:column;gap:6px;margin:12px 0}.login-field label{font-size:12px;font-weight:750;color:#475467}.login-field input{border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-size:14px;outline:none}.login-field input:focus{border-color:#8090f2;box-shadow:0 0 0 3px #3448c51a}.login-submit{width:100%;border:0;background:#3448c5;color:#fff;border-radius:10px;padding:11px 14px;font-weight:800;margin-top:6px}.login-error{font-size:12px;color:var(--danger);margin-top:10px;min-height:18px}.login-foot{font-size:10.5px;color:#98a2b3;line-height:1.4;margin-top:14px}
+@media(max-width:900px){.calendar{grid-template-columns:repeat(2,minmax(0,1fr))}.dow{display:none}.day{min-height:130px}.quote-grid{grid-template-columns:1fr}.quote-field.full{grid-column:1}.quote-summary,.quote-pricing{grid-template-columns:1fr}.mini-day{min-height:70px}}
+@media(max-width:680px){.mini-weekdays,.mini-calendar{grid-template-columns:repeat(7,minmax(70px,1fr));min-width:520px}.quote-month{overflow-x:auto;padding-bottom:4px}.quote-body{padding:14px}.quote-head{padding:14px}.pathway-chip{font-size:11px}}
+@media(max-width:560px){.calendar{grid-template-columns:1fr}.wrap{padding:10px}.day{min-height:auto}.toolbar{align-items:stretch}.tabs{width:100%}.tab{flex:1}.toolbar select,.level-picker,.level-picker-btn{width:100%;min-width:0}.level-menu{width:100%}.spacer{display:none}.month-nav{width:100%;justify-content:center}.header-inner{align-items:flex-start}.header-actions{max-width:55%}}
+@media print{@page{size:A3 landscape;margin:8mm}body{background:#fff}.quote-overlay{position:static;background:#fff;padding:0}.quote-modal{box-shadow:none;max-height:none;border:0;width:100%}.quote-close,.quote-actions,.quote-grid,.quote-error{display:none!important}.quote-head{position:static}.quote-month{break-inside:avoid}.mini-day,.mini-lesson,.quote-result,.price-case{-webkit-print-color-adjust:exact;print-color-adjust:exact}.login-shell,#app{display:none!important}}
+</style>
+</head>
+<body>
+<section id="loginScreen" class="login-shell">
+  <form id="loginForm" class="login-card" autocomplete="off">
+    <div class="login-brand"><div class="login-mark">iA</div><div><h1>Infinia Calendar</h1><p>Internal course calendar</p></div></div>
+    <div class="login-field"><label for="loginEmail">Email</label><input id="loginEmail" type="email" autocomplete="username" required></div>
+    <div class="login-field"><label for="loginPassword">Password</label><input id="loginPassword" type="password" autocomplete="current-password" required></div>
+    <button class="login-submit" type="submit">Log in</button>
+    <div id="loginError" class="login-error"></div>
+    <div class="login-foot">This website login is separate from Google Calendar authorization. Private calendar data is only requested after Google grants read-only access.</div>
+  </form>
+</section>
+
+<div id="app" hidden>
+<header>
+  <div class="header-inner">
+    <div class="header-copy"><h1>Infinia Calendar</h1><p>Infinia Academy · Live from private Google Calendar</p></div>
+    <div class="header-actions">
+      <span id="googleStatus" class="status-chip warn"><i class="status-dot"></i><span>Calendar not connected</span></span>
+      <button id="refreshBtn" class="header-btn" type="button" disabled>Refresh</button>
+      <button id="logoutBtn" class="header-btn" type="button">Log out</button>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+  <div id="configNotice" class="notice error" hidden></div>
+  <section id="connectCard" class="connect-card">
+    <h2>Connect the private teaching calendar</h2>
+    <p>After the internal website login, Google authorization is still required. The site requests read-only calendar access and accepts only the configured Google account.</p>
+    <button id="connectGoogleBtn" class="control-btn primary" type="button" disabled>Connect Google Calendar</button>
+  </section>
+
+  <section id="calendarArea" hidden>
+    <div class="toolbar">
+      <div class="tabs">
+        <button class="tab active" data-view="overview" type="button">Overview</button>
+        <button class="tab" data-view="teacher" type="button">Teacher</button>
+        <button class="tab" data-view="levels" type="button">Levels</button>
+      </div>
+      <select id="teacherSelect" hidden></select>
+      <div id="levelPicker" class="level-picker" hidden>
+        <button id="levelPickerBtn" class="level-picker-btn" type="button" aria-haspopup="listbox" aria-expanded="false">All levels</button>
+        <div id="levelMenu" class="level-menu" role="listbox" aria-multiselectable="true" hidden>
+          <div class="level-menu-head"><span>Show one or more levels</span><button id="levelAll" class="level-action" type="button">Select all</button></div>
+          <div id="levelOptions"></div>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <div class="month-nav">
+        <button id="prevMonth" class="control-btn" type="button" aria-label="Previous month">←</button>
+        <div id="monthLabel" class="month-label"></div>
+        <button id="nextMonth" class="control-btn" type="button" aria-label="Next month">→</button>
+      </div>
+      <button id="quoteBtn" class="control-btn primary" type="button">Quotation</button>
+    </div>
+    <div id="fetchNotice" class="notice" hidden></div>
+    <div id="summary" class="summary"></div>
+    <div id="legend" class="legend"></div>
+    <div class="calendar" id="calendar"></div>
+  </section>
+</main>
+</div>
+
+<div id="quoteOverlay" class="quote-overlay" hidden>
+  <section class="quote-modal" role="dialog" aria-modal="true" aria-labelledby="quoteTitle">
+    <div class="quote-head">
+      <div><h2 id="quoteTitle">Course Price Calculator</h2><p>Choose the date range and levels, then tap individual lesson slots to include or exclude them.</p></div>
+      <button id="quoteClose" class="quote-close" type="button" aria-label="Close calculator">×</button>
+    </div>
+    <div class="quote-body">
+      <div class="quote-grid">
+        <div class="quote-field full">
+          <label>Levels / pathways</label>
+          <div id="quoteLevelPicks" class="pathway-picks"></div>
+          <div class="quote-toolbar-row"><button id="quoteSelectAllLevels" class="mini-action" type="button">Select all pathways</button><button id="quoteClearLevels" class="mini-action" type="button">Clear pathways</button></div>
+        </div>
+        <div class="quote-field"><label for="quoteStart">Start date</label><input id="quoteStart" type="date"></div>
+        <div class="quote-field"><label for="quoteEnd">Finish date</label><input id="quoteEnd" type="date"></div>
+        <div class="quote-field full">
+          <div class="discount-card"><strong id="quoteDiscountHeadline">0% automatic discount</strong><span id="quoteDiscountHelp">10% for subtotal ≥ ฿5,000 · 15% for subtotal ≥ ฿10,000.</span></div>
+        </div>
+      </div>
+      <div id="quoteError" class="quote-error"></div>
+      <div class="quote-export-row">
+        <button id="quoteCopyPng" class="quote-export-btn primary" type="button">Copy PNG</button>
+        <button id="quoteDownloadPng" class="quote-export-btn" type="button">Download PNG</button>
+        <button id="quoteCopyMessage" class="quote-export-btn" type="button">Copy Message</button>
+        <span id="quoteExportStatus" class="quote-export-status">PNG export and parent message tools</span>
+      </div>
+
+      <div class="quote-preview">
+        <div class="quote-preview-head">
+          <div><h3>Period selection</h3><p>Tap any lesson to include or exclude it from the quotation. Clashing lessons render side-by-side.</p></div>
+          <span id="quotePreviewCount" class="quote-preview-count">0 selected</span>
+        </div>
+        <div id="quoteCalendars"></div>
+        <div class="quote-hint">Selected pathways control which lesson slots appear. Turning a pathway off removes its slots from the quotation; turning it back on selects its available slots again unless you manually deselected a specific slot.</div>
+      </div>
+
+      <div class="quote-summary" aria-live="polite">
+        <div class="quote-result"><span>Selected periods</span><b id="quotePeriods">0</b></div>
+        <div class="quote-result"><span>Total hours</span><b id="quoteHours">0</b></div>
+        <div class="quote-result"><span>Standard basket value</span><b id="quoteGross">฿0</b></div>
+      </div>
+      <div class="quote-pricing">
+        <section class="price-case"><h4>Standard subtotal</h4><div class="deadline">Before automatic volume discount</div><div class="big-price" id="quoteStandardPrice">฿0</div><div class="breakdown" id="quoteStandardBreakdown">No selected priced lessons.</div><span class="promo">Standard rates</span></section>
+        <section class="price-case final"><h4 id="quoteFinalTitle">Quotation total</h4><div class="deadline" id="quoteFinalDeadline">Automatic discount applied immediately</div><div class="big-price" id="quoteFinalPrice">฿0</div><div class="breakdown" id="quoteFinalBreakdown">Select lesson slots to calculate.</div><span class="promo" id="quoteFinalPromo">0% discount</span></section>
+      </div>
+      <div id="quoteStatusline" class="quote-statusline">Special title-prefix rates override school-level rates. Unpriced or all-day events remain visible but are excluded from the monetary total.</div>
+      <div class="quote-actions"><span class="quote-helper">Pricing: P4 or below ฿106/hr · P5 ฿111 · P6 ฿122 · M1 ฿133 · M2 ฿144 · M3+ ฿156. Special prefixes: Kicker/Fast/Peak ฿500, Inkjet ฿400, P4 B/AFAPS ฿200.</span><button id="printBtn" class="control-btn" type="button">Print quotation</button></div>
+    </div>
+  </section>
+</div>
+
+<div id="messageOverlay" class="message-overlay" hidden>
+  <section class="message-modal" role="dialog" aria-modal="true" aria-labelledby="messageTitle">
+    <div class="message-head">
+      <div><h3 id="messageTitle">Copy parent message</h3><p>Uses the currently selected quotation dates and lesson slots.</p></div>
+      <button id="messageClose" class="message-close" type="button" aria-label="Close message dialog">×</button>
+    </div>
+    <div class="message-body">
+      <div class="message-field"><label for="messageStudentName">Student name</label><input id="messageStudentName" type="text" autocomplete="off" placeholder="เช่น พีค"></div>
+      <div class="message-field"><label for="messageSenderGender">Sender gender</label><select id="messageSenderGender"><option value="male">Male — ครับ</option><option value="female">Female — ค่ะ</option></select></div>
+      <div class="message-toggle">
+        <div class="message-toggle-copy"><strong>Include pricing</strong><span>Add hours, subtotal/discount, final payment and bank details.</span></div>
+        <label class="switch"><input id="messageIncludePricing" type="checkbox"><span class="switch-slider"></span></label>
+      </div>
+      <div class="message-field"><label for="messagePreview">Message preview</label><textarea id="messagePreview" class="message-preview" readonly></textarea></div>
+      <div class="message-actions"><span id="messageStatus" class="message-status"></span><button id="messageCancel" class="quote-export-btn" type="button">Cancel</button><button id="messageCopy" class="quote-export-btn primary" type="button">Copy message</button></div>
+    </div>
+  </section>
+</div>
+
+<script src="config.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+'use strict';
+const C = window.INFINIA_CALENDAR_CONFIG || window.TERM2_CONFIG || {};
+const CALENDAR_SCOPE = 'https://www.googleapis.com/auth/calendar.readonly';
+const SCOPES = `openid email ${CALENDAR_SCOPE}`;
+const LEVELS = ['P4','P5','P6','M1','M2','M3','M4','M5','Others'];
+const TEACHERS = ['Tuang','Boom','Lek','Mint','Baipak','Base'];
+const TEACHER_NAMES = {Tuang:'Kru Tuang',Boom:'Kru Boom',Lek:'Kru Lek',Mint:'Kru Mint',Baipak:'Kru Baipak',Base:'Kru Base',Unknown:'Unassigned'};
+const SPECIAL_RATES = [
+  {prefix:'Kicker',rate:500},{prefix:'Fast',rate:500},{prefix:'Inkjet',rate:400},{prefix:'Peak',rate:500},{prefix:'P4 B',rate:200},{prefix:'AFAPS',rate:200}
+];
+let tokenClient=null,accessToken=null,tokenExpiresAt=0,events=[],eventStore=new Map(),view='overview',currentMonth=C.defaultMonth||new Date().toISOString().slice(0,7),selectedLevels=new Set(LEVELS),autoRefreshTimer=null;
+let quoteLevels=new Set(LEVELS),quoteSelection=new Set(),quoteDeselected=new Set(),quoteBusy=false;
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function money(n){return new Intl.NumberFormat('en-US',{style:'currency',currency:'THB',maximumFractionDigits:2}).format(Number(n)||0)}
+function fmtDateTime(d){return new Intl.DateTimeFormat('en-GB',{timeZone:C.timezone||'Asia/Bangkok',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',hour12:false}).format(d)}
+function isoDateLocal(d){return new Intl.DateTimeFormat('en-CA',{timeZone:C.timezone||'Asia/Bangkok',year:'numeric',month:'2-digit',day:'2-digit'}).format(d)}
+function parseLocalDate(s){return new Date(`${s}T00:00:00+07:00`)}
+function addDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x}
+function monthParts(){const [y,m]=currentMonth.split('-').map(Number);return {y,m}}
+function monthBounds(){const {y,m}=monthParts();const next=new Date(Date.UTC(y,m,1));const ny=next.getUTCFullYear(),nm=String(next.getUTCMonth()+1).padStart(2,'0');return {start:new Date(`${y}-${String(m).padStart(2,'0')}-01T00:00:00+07:00`),end:new Date(`${ny}-${nm}-01T00:00:00+07:00`)}}
+function monthTitle(){const {y,m}=monthParts();return new Intl.DateTimeFormat('en-US',{month:'long',year:'numeric'}).format(new Date(y,m-1,1))}
+function changeMonth(delta){const {y,m}=monthParts();const d=new Date(y,m-1+delta,1);currentMonth=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;$('monthLabel').textContent=monthTitle();if(accessToken)fetchCalendarEvents()}
+function setStatus(kind,text){const el=$('googleStatus');el.className='status-chip '+kind;el.querySelector('span').textContent=text}
+function showNotice(text,kind=''){const el=$('fetchNotice');el.textContent=text;el.className='notice'+(kind?' '+kind:'');el.hidden=!text}
+function hashHex(buffer){return [...new Uint8Array(buffer)].map(b=>b.toString(16).padStart(2,'0')).join('')}
+async function sha256(text){return hashHex(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text)))}
+
+async function handleLogin(e){
+  e.preventDefault();$('loginError').textContent='';
+  const email=$('loginEmail').value.trim().toLowerCase(),password=$('loginPassword').value;
+  const digest=await sha256(password);
+  if(email===String(C.websiteLoginEmail||'').toLowerCase() && digest===C.websiteLoginPasswordSha256){
+    sessionStorage.setItem('infiniaCalendarWebsiteLogin','1');showApp();$('loginPassword').value='';
+  }else{$('loginError').textContent='Incorrect email or password.'}
+}
+function showApp(){$('loginScreen').hidden=true;$('app').hidden=false;validateConfig();waitForGIS()}
+function logout(){sessionStorage.removeItem('infiniaCalendarWebsiteLogin');if(accessToken&&window.google?.accounts?.oauth2)google.accounts.oauth2.revoke(accessToken,()=>{});accessToken=null;location.reload()}
+function validateConfig(){const bad=!C.googleOAuthClientId||C.googleOAuthClientId.startsWith('PASTE_');$('configNotice').hidden=!bad;if(bad)$('configNotice').textContent='Setup required: paste your Google OAuth Web Client ID into config.js before Google Calendar can connect.'}
+function waitForGIS(){if(window.google?.accounts?.oauth2){initTokenClient();return}let n=0;const t=setInterval(()=>{if(window.google?.accounts?.oauth2){clearInterval(t);initTokenClient()}else if(++n>100){clearInterval(t);$('connectGoogleBtn').textContent='Google Identity failed to load'}},100)}
+function initTokenClient(){
+  if(!C.googleOAuthClientId||C.googleOAuthClientId.startsWith('PASTE_'))return;
+  tokenClient=google.accounts.oauth2.initTokenClient({client_id:C.googleOAuthClientId,scope:SCOPES,include_granted_scopes:true,login_hint:C.allowedGoogleAccount||undefined,callback:handleTokenResponse,error_callback:e=>{console.error(e);setStatus('bad','Google authorization failed')}});
+  $('connectGoogleBtn').disabled=false;
+}
+function requestGoogleAccess(){if(!tokenClient)return;showNotice('Google will ask you to approve read-only Calendar access. Make sure the Calendar permission is selected.');tokenClient.requestAccessToken({prompt:'consent'})}
+async function handleTokenResponse(resp){
+  if(resp.error){setStatus('bad','Google authorization failed');showNotice(resp.error_description||resp.error,'error');return}
+  const granted=String(resp.scope||'').split(/\s+/).filter(Boolean);const hasCalendar=granted.includes(CALENDAR_SCOPE)||(window.google?.accounts?.oauth2?.hasGrantedAllScopes&&google.accounts.oauth2.hasGrantedAllScopes(resp,CALENDAR_SCOPE));
+  if(!hasCalendar){accessToken=null;setStatus('bad','Calendar permission not granted');showNotice('Google signed you in, but Calendar read-only permission was not granted. Click Connect Google Calendar again and approve the Calendar permission.','error');$('connectCard').hidden=false;$('calendarArea').hidden=true;return}
+  accessToken=resp.access_token;tokenExpiresAt=Date.now()+(Number(resp.expires_in||3600)*1000)-60000;
+  try{
+    const r=await fetch('https://www.googleapis.com/oauth2/v3/userinfo',{headers:{Authorization:`Bearer ${accessToken}`},cache:'no-store'});if(!r.ok)throw new Error('Could not verify Google account');const info=await r.json();
+    if(String(info.email||'').toLowerCase()!==String(C.allowedGoogleAccount||'').toLowerCase()){google.accounts.oauth2.revoke(accessToken,()=>{});accessToken=null;setStatus('bad','Wrong Google account');showNotice(`Google access is restricted to ${C.allowedGoogleAccount}.`,'error');return}
+    setStatus('warn',`Connected: ${info.email} · loading calendar…`);$('connectCard').hidden=true;$('calendarArea').hidden=true;$('refreshBtn').disabled=true;$('monthLabel').textContent=monthTitle();
+    const loaded=await fetchCalendarEvents();if(loaded){$('calendarArea').hidden=false;$('refreshBtn').disabled=false;scheduleAutoRefresh()}else{$('connectCard').hidden=false}
+  }catch(err){console.error(err);setStatus('bad','Account verification failed');showNotice(err.message,'error')}
+}
+function scheduleAutoRefresh(){clearInterval(autoRefreshTimer);const mins=Math.max(1,Number(C.autoRefreshMinutes)||5);autoRefreshTimer=setInterval(()=>{if(accessToken&&Date.now()<tokenExpiresAt)fetchCalendarEvents(true)},mins*60000)}
+function assertSession(){if(!accessToken)throw new Error('Connect Google Calendar first.');if(Date.now()>=tokenExpiresAt){accessToken=null;throw new Error('Google authorization expired. Connect again.') }}
+async function requestCalendarRange(start,endExclusive){
+  assertSession();let pageToken='',items=[];
+  do{
+    const params=new URLSearchParams({timeMin:start.toISOString(),timeMax:endExclusive.toISOString(),singleEvents:'true',orderBy:'startTime',showDeleted:'false',maxResults:'2500',timeZone:C.timezone||'Asia/Bangkok'});if(pageToken)params.set('pageToken',pageToken);
+    const url=`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(C.calendarId||'primary')}/events?${params}`;
+    const r=await fetch(url,{headers:{Authorization:`Bearer ${accessToken}`},cache:'no-store'});
+    if(r.status===401){accessToken=null;throw new Error('Google authorization expired. Connect again.')}
+    if(!r.ok){const body=await r.json().catch(()=>({}));const msg=body?.error?.message||`Calendar API error ${r.status}`;if(r.status===403&&/insufficient authentication scopes/i.test(msg)){accessToken=null;throw new Error('Calendar permission is missing from the Google token. Connect again and approve Calendar read-only access.')}throw new Error(msg)}
+    const json=await r.json();items.push(...(json.items||[]));pageToken=json.nextPageToken||'';
+  }while(pageToken);
+  return items.filter(e=>e.status!=='cancelled').map(normalizeEvent);
+}
+function mergeRangeEvents(start,endExclusive,incoming){
+  for(const [id,e] of eventStore){if(e.start>=start&&e.start<endExclusive)eventStore.delete(id)}
+  for(const e of incoming)eventStore.set(e.id,e);events=[...eventStore.values()].sort((a,b)=>a.start-b.start||a.title.localeCompare(b.title));
+}
+async function fetchRangeAndMerge(start,endExclusive,{silent=false,renderMain=false}={}){
+  if(!silent)showNotice('Loading latest events from Google Calendar…');
+  const incoming=await requestCalendarRange(start,endExclusive);mergeRangeEvents(start,endExclusive,incoming);if(renderMain)render();return incoming;
+}
+async function fetchCalendarEvents(silent=false){
+  if(!accessToken)return false;if(Date.now()>=tokenExpiresAt){setStatus('warn','Google session expired');showNotice('Google authorization expired. Connect again to refresh the private calendar.','error');$('connectCard').hidden=false;$('calendarArea').hidden=true;return false}
+  if(!silent)$('refreshBtn').disabled=true;const {start,end}=monthBounds();
+  try{await fetchRangeAndMerge(start,end,{silent,renderMain:true});if(!C.googleOAuthClientId.startsWith('PASTE_'))$('configNotice').hidden=true;if(!silent)showNotice(`Live data refreshed ${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}.`,'ok');setStatus('ok','Private calendar connected');return true}
+  catch(err){console.error(err);showNotice(err.message,'error');setStatus('bad','Calendar fetch failed');if(!accessToken){$('connectCard').hidden=false;$('calendarArea').hidden=true}return false}
+  finally{$('refreshBtn').disabled=!accessToken}
+}
+function normalizeEvent(e){
+  const title=(e.summary||'(Untitled event)').trim(),description=e.description||'';const teacher=detectTeacher(e,title+' '+description),rawLevel=detectRawLevel(title),level=detectFilterLevel(title),special=detectSpecialRate(title);const allDay=!!e.start?.date;
+  const start=allDay?new Date(e.start.date+'T00:00:00+07:00'):new Date(e.start?.dateTime),end=allDay?new Date(e.end.date+'T00:00:00+07:00'):new Date(e.end?.dateTime);const hours=allDay?0:Math.max(0,(end-start)/3600000);const rate=special?.rate??normalRate(rawLevel);const price=rate==null?null:hours*rate;
+  return {id:e.id,title,description,teacher,rawLevel,level,start,end,allDay,hours,rate,price,specialRate:special?.prefix||null,htmlLink:e.htmlLink||''};
+}
+function detectTeacher(e,text){const explicit=e.extendedProperties?.private?.teacher||e.extendedProperties?.shared?.teacher||'';const hay=(explicit+' '+text).toLowerCase();for(const t of TEACHERS){if(new RegExp(`\\b(?:kru\\s+)?${t.toLowerCase()}\\b`,'i').test(hay))return t}return'Unknown'}
+function detectRawLevel(title){const m=String(title).match(/\b([PM])\s*([1-9]|1[0-2])\b/i);return m?`${m[1].toUpperCase()}${m[2]}`:null}
+function detectFilterLevel(title){const raw=detectRawLevel(title);if(!raw)return'Others';const m=raw.match(/^([PM])(\d+)$/),n=Number(m[2]);if(m[1]==='P')return n<=4?'P4':n===5?'P5':'P6';return n<=1?'M1':n===2?'M2':n===3?'M3':n===4?'M4':'M5'}
+function normalRate(raw){if(!raw)return null;const m=raw.match(/^([PM])(\d+)$/);if(!m)return null;const n=Number(m[2]);if(m[1]==='P')return n<=4?106:n===5?111:n===6?122:null;if(m[1]==='M')return n===1?133:n===2?144:n>=3?156:null;return null}
+function detectSpecialRate(title){const lower=String(title).toLowerCase();return SPECIAL_RATES.find(x=>lower.startsWith(x.prefix.toLowerCase()))||null}
+function visibleEvents(){let out=[...events];const {start,end}=monthBounds();out=out.filter(e=>e.start>=start&&e.start<end);if(view==='teacher')out=out.filter(e=>e.teacher===$('teacherSelect').value);if(view==='levels')out=out.filter(e=>selectedLevels.has(e.level));return out}
+function eventDateKey(e){return isoDateLocal(e.start)}
+function eventTime(e){if(e.allDay)return'All day';const f=new Intl.DateTimeFormat('en-GB',{timeZone:C.timezone||'Asia/Bangkok',hour:'2-digit',minute:'2-digit',hour12:false});return `${f.format(e.start)}–${f.format(e.end)}`}
+function render(){renderToolbar();renderSummary();renderCalendar()}
+function renderToolbar(){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.view===view));$('teacherSelect').hidden=view!=='teacher';$('levelPicker').hidden=view!=='levels';$('monthLabel').textContent=monthTitle()}
+function renderSummary(){const ev=visibleEvents(),priced=ev.filter(e=>e.price!=null),hours=ev.reduce((s,e)=>s+e.hours,0),subtotal=priced.reduce((s,e)=>s+e.price,0),unpriced=ev.length-priced.length;$('summary').innerHTML=`<div class="stat"><b>${ev.length}</b><span>Events shown</span></div><div class="stat"><b>${hours.toFixed(1)}</b><span>Teaching hours</span></div><div class="stat"><b>${money(subtotal)}</b><span>Pre-discount value</span></div><div class="stat"><b>${new Set(ev.map(e=>eventDateKey(e))).size}</b><span>Active days</span></div><div class="stat"><b>${unpriced}</b><span>Unpriced / all-day events</span></div>`}
+function renderCalendar(){
+  const ev=visibleEvents(),{y,m}=monthParts(),first=new Date(y,m-1,1),days=new Date(y,m,0).getDate(),offset=(first.getDay()+6)%7;let html=['MON','TUE','WED','THU','FRI','SAT','SUN'].map(d=>`<div class="dow">${d}</div>`).join('');
+  for(let i=0;i<offset;i++)html+='<div class="day dim"></div>';
+  for(let d=1;d<=days;d++){
+    const key=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`,dayEvents=ev.filter(e=>eventDateKey(e)===key).sort((a,b)=>a.start-b.start||a.title.localeCompare(b.title)),isToday=isoDateLocal(new Date())===key;
+    html+=`<div class="day${isToday?' today':''}"><div class="dayhead"><span class="date">${d} ${new Intl.DateTimeFormat('en-US',{weekday:'short'}).format(new Date(y,m-1,d))}</span><span class="count">${dayEvents.length} event${dayEvents.length===1?'':'s'}</span></div>`;
+    if(!dayEvents.length)html+='<div class="empty">No lessons</div>';else for(const e of dayEvents){const rate=e.rate==null?'No rate':`${e.specialRate?'Special · ':''}฿${e.rate}/hr`;html+=`<div class="event ${e.teacher}" title="${esc(e.title)}"><strong>${esc(e.title)}</strong><small>${eventTime(e)} · ${esc(TEACHER_NAMES[e.teacher])}</small><div class="event-meta"><small>${esc(e.level)}${e.rawLevel&&e.rawLevel!==e.level?` · ${esc(e.rawLevel)}`:''}</small><span class="rate-badge">${rate}</span></div></div>`}
+    html+='</div>';
+  }$('calendar').innerHTML=html;
+}
+function initControls(){
+  $('teacherSelect').innerHTML=[...TEACHERS,'Unknown'].map(t=>`<option value="${t}">${TEACHER_NAMES[t]}</option>`).join('');$('legend').innerHTML=[...TEACHERS,'Unknown'].map(t=>`<span class="pill ${t}">${TEACHER_NAMES[t]}</span>`).join('');$('levelOptions').innerHTML=LEVELS.map(l=>`<label class="level-option"><input type="checkbox" value="${l}" checked><span>${l}</span></label>`).join('');
+  document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{view=b.dataset.view;render()});$('teacherSelect').onchange=render;
+  $('levelOptions').querySelectorAll('input').forEach(cb=>cb.onchange=()=>{const checked=[...$('levelOptions').querySelectorAll('input:checked')].map(x=>x.value);if(!checked.length){cb.checked=true;return}selectedLevels=new Set(checked);updateLevelButton();render()});
+  $('levelPickerBtn').onclick=e=>{e.stopPropagation();$('levelMenu').hidden=!$('levelMenu').hidden;$('levelPickerBtn').setAttribute('aria-expanded',String(!$('levelMenu').hidden))};$('levelAll').onclick=()=>{$('levelOptions').querySelectorAll('input').forEach(x=>x.checked=true);selectedLevels=new Set(LEVELS);updateLevelButton();render()};document.addEventListener('click',e=>{if(!$('levelPicker').contains(e.target))$('levelMenu').hidden=true});
+  $('prevMonth').onclick=()=>changeMonth(-1);$('nextMonth').onclick=()=>changeMonth(1);$('refreshBtn').onclick=()=>fetchCalendarEvents();$('connectGoogleBtn').onclick=requestGoogleAccess;$('logoutBtn').onclick=logout;$('quoteBtn').onclick=openQuote;$('quoteClose').onclick=closeQuote;$('quoteOverlay').onclick=e=>{if(e.target===$('quoteOverlay'))closeQuote()};$('printBtn').onclick=()=>window.print();$('quoteCopyPng').onclick=copyQuotePng;$('quoteDownloadPng').onclick=()=>downloadQuotePng();$('quoteCopyMessage').onclick=openMessageDialog;$('messageClose').onclick=closeMessageDialog;$('messageCancel').onclick=closeMessageDialog;$('messageOverlay').onclick=e=>{if(e.target===$('messageOverlay'))closeMessageDialog()};$('messageStudentName').oninput=updateMessagePreview;$('messageSenderGender').onchange=updateMessagePreview;$('messageIncludePricing').onchange=updateMessagePreview;$('messageCopy').onclick=copyParentMessage;
+  $('quoteSelectAllLevels').onclick=()=>{quoteLevels=new Set(LEVELS);renderQuoteLevelPicks();syncQuoteSelection();renderQuote()};$('quoteClearLevels').onclick=()=>{quoteLevels.clear();renderQuoteLevelPicks();syncQuoteSelection();renderQuote()};$('quoteStart').onchange=handleQuoteDateChange;$('quoteEnd').onchange=handleQuoteDateChange;
+}
+function updateLevelButton(){const a=[...selectedLevels];$('levelPickerBtn').textContent=a.length===LEVELS.length?'All levels':a.length<=3?a.join(', '):`${a.length} levels selected`}
+function discountRate(subtotal){return subtotal>=10000?.15:subtotal>=5000?.10:0}
+function currentMonthDateStrings(){const {y,m}=monthParts();return {start:`${y}-${String(m).padStart(2,'0')}-01`,end:`${y}-${String(m).padStart(2,'0')}-${String(new Date(y,m,0).getDate()).padStart(2,'0')}`}}
+function quoteRange(){const s=$('quoteStart').value,e=$('quoteEnd').value;if(!s||!e)return null;const start=parseLocalDate(s),end=parseLocalDate(e);if(start>end)return null;return {start,end,endExclusive:addDays(end,1)}}
+function quoteEligibleEvents(){const r=quoteRange();if(!r)return[];return events.filter(e=>e.start>=r.start&&e.start<r.endExclusive&&quoteLevels.has(e.level)).sort((a,b)=>a.start-b.start||a.title.localeCompare(b.title))}
+function syncQuoteSelection(){const eligible=quoteEligibleEvents(),ids=new Set(eligible.map(e=>e.id));for(const id of [...quoteSelection])if(!ids.has(id))quoteSelection.delete(id);for(const e of eligible)if(!quoteDeselected.has(e.id))quoteSelection.add(e.id)}
+function renderQuoteLevelPicks(){
+  $('quoteLevelPicks').innerHTML=LEVELS.map(l=>`<label class="pathway-chip${quoteLevels.has(l)?'':' off'}"><input type="checkbox" value="${l}" ${quoteLevels.has(l)?'checked':''}><span>${l}</span></label>`).join('');
+  $('quoteLevelPicks').querySelectorAll('input').forEach(cb=>cb.onchange=()=>{if(cb.checked)quoteLevels.add(cb.value);else quoteLevels.delete(cb.value);renderQuoteLevelPicks();syncQuoteSelection();renderQuote()});
+}
+async function openQuote(){const d=currentMonthDateStrings();$('quoteStart').value=d.start;$('quoteEnd').value=d.end;quoteLevels=new Set(LEVELS);quoteSelection.clear();quoteDeselected.clear();renderQuoteLevelPicks();$('quoteOverlay').hidden=false;await ensureQuoteRangeLoaded(true);syncQuoteSelection();renderQuote()}
+function closeQuote(){$('quoteOverlay').hidden=true}
+function setQuoteError(msg=''){const el=$('quoteError');el.textContent=msg;el.classList.toggle('show',!!msg)}
+async function handleQuoteDateChange(){if(quoteBusy)return;const r=quoteRange();if(!r){setQuoteError('Finish date must be on or after the start date.');return}setQuoteError('');await ensureQuoteRangeLoaded(false);syncQuoteSelection();renderQuote()}
+async function ensureQuoteRangeLoaded(initial=false){
+  const r=quoteRange();if(!r)return;quoteBusy=true;const oldHeadline=$('quoteDiscountHeadline').textContent;$('quoteDiscountHeadline').textContent='Loading calendar range…';
+  try{await fetchRangeAndMerge(r.start,r.endExclusive,{silent:true,renderMain:false});if(initial)quoteDeselected.clear()}
+  catch(err){console.error(err);setQuoteError(err.message)}finally{quoteBusy=false;$('quoteDiscountHeadline').textContent=oldHeadline}
+}
+function toggleQuoteEvent(id){if(quoteSelection.has(id)){quoteSelection.delete(id);quoteDeselected.add(id)}else{quoteSelection.add(id);quoteDeselected.delete(id)}renderQuote()}
+function monthSequenceForRange(start,end){const out=[];let d=new Date(start.getFullYear(),start.getMonth(),1),last=new Date(end.getFullYear(),end.getMonth(),1);while(d<=last){out.push({y:d.getFullYear(),m:d.getMonth()+1});d=new Date(d.getFullYear(),d.getMonth()+1,1)}return out}
+function groupClashes(dayEvents){const groups=[];for(const e of dayEvents){const key=e.allDay?`all-${e.id}`:`${e.start.getTime()}-${e.end.getTime()}`;let g=groups.find(x=>x.key===key);if(!g){g={key,start:e.start,items:[]};groups.push(g)}g.items.push(e)}return groups.sort((a,b)=>a.start-b.start)}
+function renderQuoteMonth(y,m,eligible,range){
+  const monthName=new Intl.DateTimeFormat('en-US',{month:'long',year:'numeric'}).format(new Date(y,m-1,1)),days=new Date(y,m,0).getDate(),offset=(new Date(y,m-1,1).getDay()+6)%7;
+  let cells='';for(let i=0;i<offset;i++)cells+='<div class="mini-day out-range"></div>';
+  for(let d=1;d<=days;d++){
+    const ds=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`,date=parseLocalDate(ds),inRange=date>=range.start&&date<range.endExclusive,dayEvents=inRange?eligible.filter(e=>eventDateKey(e)===ds):[];
+    cells+=`<div class="mini-day${inRange?'':' out-range'}"><div class="mini-date"><span>${d}</span><span>${new Intl.DateTimeFormat('en-US',{weekday:'short'}).format(new Date(y,m-1,d))}</span></div><div class="mini-events">`;
+    if(inRange&&dayEvents.length){for(const g of groupClashes(dayEvents)){const multi=g.items.length>1;cells+=`<div class="mini-slot${multi?' multi':''}"${multi?` style="--slot-count:${g.items.length}"`:''}>`;for(const e of g.items){const selected=quoteSelection.has(e.id),rate=e.rate==null?'unpriced':`฿${e.rate}/hr`;cells+=`<button type="button" class="mini-lesson q-${e.teacher}${selected?'':' off'}" data-quote-event="${esc(e.id)}" title="${esc(e.title)} · ${eventTime(e)} · ${rate}"><span class="lesson-name">${esc(e.title)}</span><span class="lesson-time">${eventTime(e)}</span></button>`}cells+='</div>'}}
+    else if(inRange)cells+='<span class="mini-empty"></span>';
+    cells+='</div></div>';
+  }
+  return `<section class="quote-month"><div class="quote-month-title">${monthName}</div><div class="mini-weekdays"><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span></div><div class="mini-calendar">${cells}</div></section>`;
+}
+function quoteSelectedEvents(){return quoteEligibleEvents().filter(e=>quoteSelection.has(e.id))}
+function canvasRoundRect(ctx,x,y,w,h,r,fill,stroke){
+  const rr=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+rr,y);ctx.arcTo(x+w,y,x+w,y+h,rr);ctx.arcTo(x+w,y+h,x,y+h,rr);ctx.arcTo(x,y+h,x,y,rr);ctx.arcTo(x,y,x+w,y,rr);ctx.closePath();
+  if(fill){ctx.fillStyle=fill;ctx.fill()}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.stroke()}
+}
+function canvasEllipsis(ctx,text,maxWidth){let s=String(text??'');if(ctx.measureText(s).width<=maxWidth)return s;while(s.length>1&&ctx.measureText(s+'…').width>maxWidth)s=s.slice(0,-1);return s+'…'}
+function quoteTeacherCanvasStyle(teacher){
+  return {Tuang:['#ffe4e6','#fda4af','#9f1239'],Boom:['#fef3c7','#facc15','#854d0e'],Lek:['#fed7aa','#fb923c','#9a3412'],Mint:['#fce7f3','#f9a8d4','#9d174d'],Baipak:['#dbeafe','#93c5fd','#1e40af'],Base:['#dcfce7','#86efac','#166534'],Unknown:['#eef0ff','#aeb8ff','#2437a6']}[teacher]||['#eef0ff','#aeb8ff','#2437a6'];
+}
+function quoteCanvasMonthMetrics(y,m,selected){
+  const days=new Date(y,m,0).getDate(),offset=(new Date(y,m-1,1).getDay()+6)%7,rows=Math.ceil((offset+days)/7);let maxGroups=0;
+  for(let d=1;d<=days;d++){const ds=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`,g=groupClashes(selected.filter(e=>eventDateKey(e)===ds));maxGroups=Math.max(maxGroups,g.length)}
+  const rowH=Math.max(132,44+Math.min(maxGroups,6)*43);return {days,offset,rows,rowH,height:52+rows*(rowH+8)};
+}
+function renderQuotePngCanvas(){
+  const range=quoteRange();if(!range)throw new Error('Choose a valid quotation date range first.');
+  const selected=quoteSelectedEvents(),priced=selected.filter(e=>e.price!=null),hours=selected.reduce((s,e)=>s+e.hours,0),subtotal=priced.reduce((s,e)=>s+e.price,0),dr=discountRate(subtotal),discount=subtotal*dr,total=subtotal-discount,unpriced=selected.length-priced.length;
+  const months=monthSequenceForRange(range.start,range.end),monthMetrics=months.map(x=>({...x,...quoteCanvasMonthMetrics(x.y,x.m,selected)}));
+  const W=1800,SCALE=2,topH=340,summaryH=300,bottomPad=70,monthTotal=monthMetrics.reduce((s,x)=>s+x.height+26,0),H=topH+monthTotal+summaryH+bottomPad;
+  const canvas=document.createElement('canvas');canvas.width=W*SCALE;canvas.height=H*SCALE;const ctx=canvas.getContext('2d');ctx.scale(SCALE,SCALE);ctx.textBaseline='alphabetic';
+  ctx.fillStyle='#f6f7fb';ctx.fillRect(0,0,W,H);ctx.fillStyle='#101828';ctx.fillRect(0,0,W,122);ctx.fillStyle='#fff';ctx.font='800 36px Inter, Arial, sans-serif';ctx.fillText('Infinia Academy · Course Quotation',55,55);ctx.font='500 20px Inter, Arial, sans-serif';ctx.fillStyle='#d0d5dd';ctx.fillText('Infinia Calendar · selected teaching periods',55,88);
+  const pct=Math.round(dr*100);canvasRoundRect(ctx,55,148,1690,104,18,'#fff9e8','#f3c15f');ctx.fillStyle='#8a5800';ctx.font='850 31px Inter, Arial, sans-serif';ctx.fillText(pct?`Automatic discount ${pct}%`:'Standard course pricing',80,190);ctx.font='550 18px Inter, Arial, sans-serif';ctx.fillText(pct?`${pct}% is applied automatically to this selected basket.`:'10% from ฿5,000 · 15% from ฿10,000.',80,222);
+  const startText=new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short',year:'numeric'}).format(range.start),endText=new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short',year:'numeric'}).format(range.end),levels=[...quoteLevels];ctx.fillStyle='#475467';ctx.font='700 18px Inter, Arial, sans-serif';ctx.fillText(`${startText} – ${endText} · ${levels.length?levels.join(' · '):'No pathways selected'}`,60,292);
+  ctx.font='600 15px Inter, Arial, sans-serif';ctx.fillStyle='#667085';ctx.fillText(`${selected.length} selected period${selected.length===1?'':'s'} · ${hours.toFixed(1)} hours`,60,320);
+
+  let y=354;const x0=55,gap=8,col=(1690-gap*6)/7,weekdays=['MON','TUE','WED','THU','FRI','SAT','SUN'];
+  for(const mm of monthMetrics){
+    ctx.fillStyle='#344054';ctx.font='850 22px Inter, Arial, sans-serif';ctx.fillText(new Intl.DateTimeFormat('en-US',{month:'long',year:'numeric'}).format(new Date(mm.y,mm.m-1,1)),55,y+20);y+=38;
+    ctx.fillStyle='#98a2b3';ctx.font='800 13px Inter, Arial, sans-serif';weekdays.forEach((d,i)=>{const tw=ctx.measureText(d).width;ctx.fillText(d,x0+i*(col+gap)+(col-tw)/2,y+8)});y+=22;
+    const cells=[];for(let i=0;i<mm.offset;i++)cells.push(null);for(let d=1;d<=mm.days;d++)cells.push(d);while(cells.length<mm.rows*7)cells.push(null);
+    cells.forEach((d,idx)=>{const r=Math.floor(idx/7),c=idx%7,x=x0+c*(col+gap),cy=y+r*(mm.rowH+8);canvasRoundRect(ctx,x,cy,col,mm.rowH,11,d?'#fff':'#fafafa','#dfe3ea');if(!d)return;ctx.fillStyle='#475467';ctx.font='800 16px Inter, Arial, sans-serif';ctx.fillText(String(d),x+9,cy+22);const ds=`${mm.y}-${String(mm.m).padStart(2,'0')}-${String(d).padStart(2,'0')}`,groups=groupClashes(selected.filter(e=>eventDateKey(e)===ds));let ey=cy+31,maxGroups=6;groups.slice(0,maxGroups).forEach(g=>{const items=g.items,innerX=x+7,innerW=col-14,sg=3,sw=(innerW-sg*(items.length-1))/items.length;items.forEach((e,j)=>{const bx=innerX+j*(sw+sg),[fill,stroke,color]=quoteTeacherCanvasStyle(e.teacher);canvasRoundRect(ctx,bx,ey,sw,38,6,fill,stroke);ctx.save();ctx.beginPath();ctx.rect(bx+5,ey+3,Math.max(1,sw-10),32);ctx.clip();ctx.fillStyle=color;ctx.font='800 12px Inter, Arial, sans-serif';ctx.fillText(canvasEllipsis(ctx,e.title,sw-12),bx+6,ey+15);ctx.font='650 10px Inter, Arial, sans-serif';ctx.fillText(canvasEllipsis(ctx,eventTime(e),sw-12),bx+6,ey+30);ctx.restore()});ey+=42});if(groups.length>maxGroups){ctx.fillStyle='#667085';ctx.font='700 10px Inter, Arial, sans-serif';ctx.fillText(`+${groups.length-maxGroups} more`,x+9,Math.min(cy+mm.rowH-8,ey+9))}});
+    y+=mm.rows*(mm.rowH+8)+22;
+  }
+  const sy=y+4;const cardGap=12,cardW=(1690-cardGap*2)/3;[['Selected periods',String(selected.length)],['Total hours',hours.toFixed(1)],['Standard subtotal',money(subtotal)]].forEach((it,i)=>{const x=55+i*(cardW+cardGap);canvasRoundRect(ctx,x,sy,cardW,112,15,'#fff','#dfe3ea');ctx.fillStyle='#667085';ctx.font='800 14px Inter, Arial, sans-serif';ctx.fillText(it[0].toUpperCase(),x+20,sy+30);ctx.fillStyle='#172033';ctx.font='900 32px Inter, Arial, sans-serif';ctx.fillText(it[1],x+20,sy+78)});
+  const py=sy+130;canvasRoundRect(ctx,55,py,1690,126,16,'#f5f7ff','#9aa8ff');ctx.fillStyle='#293a9b';ctx.font='850 20px Inter, Arial, sans-serif';ctx.fillText(pct?`Quotation total after ${pct}% discount`:'Quotation total',80,py+34);ctx.font='900 42px Inter, Arial, sans-serif';ctx.fillText(money(total),80,py+86);ctx.font='650 16px Inter, Arial, sans-serif';ctx.fillStyle='#667085';const detail=pct?`${money(subtotal)} − ${money(discount)} = ${money(total)}`:`Subtotal ${money(subtotal)} · discount starts at ฿5,000`;ctx.fillText(detail,520,py+57);ctx.fillText(`${priced.length} priced lesson${priced.length===1?'':'s'}${unpriced?` · ${unpriced} unpriced/all-day excluded`:''}`,520,py+84);
+  ctx.fillStyle='#98a2b3';ctx.font='550 14px Inter, Arial, sans-serif';ctx.fillText('Special title-prefix rates override school-level rates. Generated from the current live quotation selection.',55,H-34);return canvas;
+}
+function setQuoteExportStatus(text){const el=$('quoteExportStatus');if(el)el.textContent=text}
+function quotePngFilename(){const r=quoteRange(),s=r?isoDateLocal(r.start):'start',e=r?isoDateLocal(r.end):'end';return `Infinia_calendar_quote_${s}_to_${e}.png`}
+function downloadQuotePng(canvas){try{const c=canvas||renderQuotePngCanvas(),a=document.createElement('a');a.href=c.toDataURL('image/png');a.download=quotePngFilename();document.body.appendChild(a);a.click();a.remove();setQuoteExportStatus('PNG downloaded ✓')}catch(err){console.error(err);setQuoteExportStatus(err.message||'PNG export failed')}}
+async function copyQuotePng(){
+  try{const canvas=renderQuotePngCanvas(),blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error('Could not render PNG.')),'image/png'));if(!navigator.clipboard?.write||typeof ClipboardItem==='undefined')throw new Error('Clipboard image copy is not supported in this browser.');await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);setQuoteExportStatus('PNG copied to clipboard ✓')}
+  catch(err){console.warn(err);const canvas=renderQuotePngCanvas();downloadQuotePng(canvas);setQuoteExportStatus('Clipboard blocked — PNG downloaded instead')}
+}
+const THAI_MONTHS_SHORT=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const THAI_WEEKDAYS=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+function thaiShortDate(date,withWeekday=false){
+  const d=new Date(date),day=d.getDate(),month=THAI_MONTHS_SHORT[d.getMonth()],yy=String(d.getFullYear()+543).slice(-2),wd=THAI_WEEKDAYS[d.getDay()];return `${withWeekday?wd+' ':''}${day} ${month}${yy}`;
+}
+function messageSubjectLabel(event){
+  const t=String(event.title||'').toLowerCase();
+  if(/math|คณิต/.test(t))return'คณิต';
+  if(/science|วิทย์|วิทยาศาสตร์/.test(t))return'วิทย์';
+  if(/english|อังกฤษ/.test(t))return'อังกฤษ';
+  if(/physics|ฟิสิกส์/.test(t))return'ฟิสิกส์';
+  if(/chemistry|เคมี/.test(t))return'เคมี';
+  if(/biology|ชีว/.test(t))return'ชีวะ';
+  if(/thai|ภาษาไทย/.test(t))return'ภาษาไทย';
+  if(/social|สังคม/.test(t))return'สังคม';
+  let label=String(event.title||'คาบเรียน').replace(/\b(?:P[1-6]|M[1-6])\b/gi,'').replace(/\bKru\s+(?:Tuang|Boom|Lek|Mint|Baipak|Base)\b/gi,'').replace(/\s{2,}/g,' ').trim();
+  return label||'คาบเรียน';
+}
+function messageEventTime(event){return eventTime(event).replace('–','-')}
+function thaiBaht(n){return new Intl.NumberFormat('th-TH',{maximumFractionDigits:2}).format(Number(n)||0)}
+function parentMessageText(){
+  const range=quoteRange(),selected=quoteSelectedEvents().slice().sort((a,b)=>a.start-b.start||a.title.localeCompare(b.title));
+  if(!range)throw new Error('กรุณาเลือกช่วงวันที่ให้ถูกต้อง');
+  if(!selected.length)throw new Error('กรุณาเลือกอย่างน้อย 1 คาบเรียน');
+  const student=$('messageStudentName').value.trim();if(!student)throw new Error('กรุณากรอกชื่อน้อง');
+  const female=$('messageSenderGender').value==='female',particle=female?'ค่ะ':'ครับ',softParticle=female?'นะคะ':'นะครับ',includePricing=$('messageIncludePricing').checked;
+  const groups=new Map();for(const e of selected){const k=eventDateKey(e);if(!groups.has(k))groups.set(k,[]);groups.get(k).push(e)}
+  const lines=[];
+  lines.push(`ขออนุญาตแจ้งตารางเรียน ของน้อง ${student}`,'',`ในห้วง ${thaiShortDate(range.start)} ถึง ${thaiShortDate(range.end)} ${softParticle} 😊`,'');
+  for(const [key,items] of groups){const date=parseLocalDate(key);lines.push(`🗓️ ${thaiShortDate(date,true)}`,'');for(const e of items)lines.push(`- ${messageSubjectLabel(e)} ${messageEventTime(e)}`);lines.push('')}
+  if(includePricing){
+    const priced=selected.filter(e=>e.price!=null),hours=selected.reduce((sum,e)=>sum+e.hours,0),subtotal=priced.reduce((sum,e)=>sum+e.price,0),dr=discountRate(subtotal),total=subtotal-(subtotal*dr),hoursText=Number.isInteger(hours)?String(hours):hours.toFixed(1);
+    lines.push(`รวมเรียน ${selected.length} คาบ หรือคิดเป็น ${hoursText} ชม.`,'' ,`ยอดชำระ ${thaiBaht(subtotal)} บาท`);
+    if(dr>0)lines.push(`ยอดชำระจริงหลังหักส่วนลด ${Math.round(dr*100)}% ${thaiBaht(total)} บาท`);
+    lines.push('','รบกวนชำระมาที่บัญชี','','ธนาคารกสิกร','237-1-20029-3','บจก. อนันตปัญญา','','',`ขอบคุณ${particle} 🙏`);
+  }else{
+    lines.push(`ผู้ปกครองสามารถ พิจารณาเลือกลงเรียนตามสะดวกได้เลย${softParticle} 🙏`,'',`หากต้องการเพิ่ม/ตัดคาบไหน แจ้งได้เลย${particle}`,'',`สถาบันจะทำการคำนวนค่าเรียนให้ใหม่${particle}ผม`);
+    if(female)lines[lines.length-1]=`สถาบันจะทำการคำนวนค่าเรียนให้ใหม่${particle}`;
+  }
+  return lines.join('\n').replace(/\n{4,}/g,'\n\n\n').trim();
+}
+function updateMessagePreview(){
+  const out=$('messagePreview'),status=$('messageStatus');if(!out)return;try{out.value=parentMessageText();status.textContent=''}catch(err){out.value='';status.textContent=err.message||'กรอกข้อมูลให้ครบ'}
+}
+function openMessageDialog(){
+  if(!quoteSelectedEvents().length){setQuoteExportStatus('Select at least one lesson before creating a message.');return}
+  $('messageStudentName').value='';$('messageSenderGender').value='male';$('messageIncludePricing').checked=false;$('messageStatus').textContent='';$('messageOverlay').hidden=false;updateMessagePreview();setTimeout(()=>$('messageStudentName').focus(),0);
+}
+function closeMessageDialog(){$('messageOverlay').hidden=true}
+async function writeTextClipboard(text){
+  if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(text);return}
+  const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.focus();ta.select();const ok=document.execCommand('copy');ta.remove();if(!ok)throw new Error('Clipboard copy failed');
+}
+async function copyParentMessage(){
+  try{const text=parentMessageText();await writeTextClipboard(text);$('messageStatus').textContent='Copied to clipboard ✓';setQuoteExportStatus('Parent message copied ✓');setTimeout(closeMessageDialog,450)}catch(err){$('messageStatus').textContent=err.message||'Copy failed'}
+}
+
+function renderQuote(){
+  const r=quoteRange();if(!r){setQuoteError('Finish date must be on or after the start date.');return}const eligible=quoteEligibleEvents(),selected=eligible.filter(e=>quoteSelection.has(e.id)),priced=selected.filter(e=>e.price!=null),hours=selected.reduce((s,e)=>s+e.hours,0),subtotal=priced.reduce((s,e)=>s+e.price,0),dr=discountRate(subtotal),discount=subtotal*dr,total=subtotal-discount,unpriced=selected.length-priced.length;
+  $('quoteCalendars').innerHTML=monthSequenceForRange(r.start,r.end).map(x=>renderQuoteMonth(x.y,x.m,eligible,r)).join('');$('quoteCalendars').querySelectorAll('[data-quote-event]').forEach(btn=>btn.onclick=()=>toggleQuoteEvent(btn.dataset.quoteEvent));
+  $('quotePreviewCount').textContent=`${selected.length} selected`;$('quotePeriods').textContent=selected.length;$('quoteHours').textContent=hours.toFixed(1);$('quoteGross').textContent=money(subtotal);$('quoteStandardPrice').textContent=money(subtotal);$('quoteStandardBreakdown').textContent=priced.length?`${priced.length} priced lesson${priced.length===1?'':'s'} · ${hours.toFixed(1)} total hours${unpriced?` · ${unpriced} unpriced excluded`:''}`:'No selected priced lessons.';
+  $('quoteDiscountHeadline').textContent=`${Math.round(dr*100)}% automatic discount`;$('quoteFinalTitle').textContent=dr?`Quotation total after ${Math.round(dr*100)}% discount`:'Quotation total';$('quoteFinalPrice').textContent=money(total);$('quoteFinalBreakdown').textContent=dr?`${money(subtotal)} − ${money(discount)} automatic discount = ${money(total)}`:`Subtotal ${money(subtotal)}. Discount begins at ฿5,000.`;$('quoteFinalPromo').textContent=`${Math.round(dr*100)}% discount`;
+  $('quoteStatusline').textContent=`${selected.length} selected period${selected.length===1?'':'s'} · ${hours.toFixed(1)} hours · ${unpriced} unpriced/all-day event${unpriced===1?'':'s'} excluded from monetary total.`;
+}
+
+$('loginForm').addEventListener('submit',handleLogin);initControls();updateLevelButton();
+if(sessionStorage.getItem('infiniaCalendarWebsiteLogin')==='1'||sessionStorage.getItem('term2WebsiteLogin')==='1'){sessionStorage.removeItem('term2WebsiteLogin');sessionStorage.setItem('infiniaCalendarWebsiteLogin','1');showApp()}else{$('loginEmail').value=C.websiteLoginEmail||''}
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>

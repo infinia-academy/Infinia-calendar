@@ -1,0 +1,8 @@
+{
+  "name": "Infinia Calendar",
+  "short_name": "Infinia Calendar",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f6f7fb",
+  "theme_color": "#101828"
+}
