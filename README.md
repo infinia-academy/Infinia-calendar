@@ -158,3 +158,11 @@ The quotation panel includes **Copy PNG** and **Download PNG** controls. The PNG
 ## Parent message copy
 
 The quotation panel includes **Copy Message**. It prompts for the student name, sender gender (male/female), and whether pricing should be included. The generated Thai message uses only the currently selected lesson slots and date range, groups lessons by day, and copies the result to the clipboard. When pricing is enabled it also includes total periods/hours, subtotal, any automatic discount, final payment, and the configured Kasikorn bank details.
+
+
+## Latest quotation export updates
+
+- Student name(s) field adds the rendered title `ตารางเรียน <start - end> ของน้อง <name>`.
+- Schedule event pills and fonts are approximately 2x larger/taller in the quotation preview and PNG export.
+- PNG export remains at 4x canvas scale.
+- Subject pills, manual integer discount, date codes such as `2 MON`, and Hide Price schedule-only export remain supported.

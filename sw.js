@@ -1,4 +1,4 @@
-const CACHE='infinia-calendar-v3';
+const CACHE='infinia-calendar-v12';
 const STATIC=['./','./index.html','./config.js','./manifest.webmanifest'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(c=>c.addAll(STATIC)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{for(const k of await caches.keys())if(k!==CACHE)await caches.delete(k);await self.clients.claim()})()));
